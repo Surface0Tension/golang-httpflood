@@ -34,7 +34,9 @@ Using Golang(net/socket) to httpflood
 
 
 ## Download
-***Please download the F\*cking golang at first.***
+***Please download the golang at first.***
+
+Follow the instruction on the [Golang Offical Site](https://golang.org/dl/) to install golang.
 
 Then:
 
