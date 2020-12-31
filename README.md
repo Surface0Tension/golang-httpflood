@@ -1,3 +1,7 @@
+# This is a self modified script
+
+**Original script: [Leeon123/golang-httpflood](https://github.com/Leeon123/golang-httpflood)**
+
 # Golang-httpflood ![](https://img.shields.io/badge/Version-2.0-brightgreen.svg) ![](https://img.shields.io/badge/license-MIT-blue.svg)
 Using Golang(net/socket) to httpflood
 
@@ -20,6 +24,7 @@ Using Golang(net/socket) to httpflood
  - [x] Auto get ip form domain(golang inbuilt function)
  - [x] More format for random url(http get flood)
  - [x] Fixed for 386 systems
+ - [x] A more user-friendly interface
  -----------------------------------------------------
  Default header setting:
  - [x] Random user-agents
