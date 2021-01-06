@@ -355,13 +355,13 @@ func main() {
 	fmt.Println("=================================================")
 
 	//test url
-	fmt.Println("\r\nStarting the URL Test")
-	if test(){
-		fmt.Println("URL Test performed sucessfully")
-	}else{
-		fmt.Println("URL Test failed\r\nPlease make sure the url is correct and the ip does not get blocked by the target host") //When showing this message, it means ur  or the target server down.
-		os.Exit(1)
-	}
+	//fmt.Println("\r\nStarting the URL Test")
+	//if test(){
+	//	fmt.Println("URL Test performed sucessfully")
+	//}else{
+	//	fmt.Println("URL Test failed\r\nPlease make sure the url is correct and the ip does not get blocked by the target host") //When showing this message, it means ur  or the target server down.
+	//	os.Exit(1)
+	//}
 
 	//preparing threads
 	for i := 0; i < threads; i++ {
